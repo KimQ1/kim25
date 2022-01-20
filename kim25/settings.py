@@ -55,7 +55,8 @@ ROOT_URLCONF = 'kim25.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [BASE_DIR / 'templates',
+                 ]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -75,13 +76,25 @@ WSGI_APPLICATION = 'kim25.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    'default' : {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'kim25',
+        'USER': 'root',
+        'PASSWORD':'Root123+',
+        'HOST': '42.193.150.217',
+        'PORT':3306,
+        'CHARSET':'utf8'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -121,6 +134,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -130,7 +147,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ###SMS####
 TENCENT_SMS_APP_ID = 111111111
 TENCENT_SMS_APP_KEY = 'c111111'
-TENCENT_SMS_APP_SIGN = '是一个好人'
+TENCENT_SMS_APP_SIGN = '是一个好人公众号'
 TENCENT_SMS_TEMPLATE = {
     'register': 1284580,
     'login': 1284581,
