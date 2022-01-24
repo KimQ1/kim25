@@ -1,32 +1,12 @@
-from django.shortcuts import render,HttpResponse
+'''
+用户相关功能
+'''
 from django.core.validators import RegexValidator
-from django.core.exceptions import ValidationError
+from django.shortcuts import render
 
-# Create your views here.
-from utils.tencent.sms import send_sms_single
-import random
-
-from django.conf import settings
-
-def send_sms(request):
-    '''
-    ?tlp=register -》1283745
-    '''
-    code = random.randrange(1000, 9999)
-    tpl = request.GET.get('tpl')
-    template_id = settings.TENCENT_SMS_TEMPLATE.get(tpl)
-    userPhoneNum = 15882887813
-    if not template_id:
-        return HttpResponse('模板不存在')
-    res = send_sms_single(userPhoneNum,template_id,[code,])
-    print(res)
-    if res['result'] == 0:
-        return HttpResponse('成功')
-    else:
-        return HttpResponse(res['errmsg'])
 
 from django import forms
-from app01 import models
+from web import models
 
 class RegisterModelForm(forms.ModelForm):
     mobile_phone = forms.CharField(label = '手机号',
@@ -50,6 +30,4 @@ class RegisterModelForm(forms.ModelForm):
             field.widget.attrs['placeholder'] = '请输入'+f'{field.label}'
 
 def register(request):
-    form = RegisterModelForm()
-    print(form)
-    return  render(request, 'app01/register.html', {'form':form})
+    return render(request, 'web/../templates/register.html')
