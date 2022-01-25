@@ -30,4 +30,4 @@ class RegisterModelForm(forms.ModelForm):
             field.widget.attrs['placeholder'] = '请输入'+f'{field.label}'
 
 def register(request):
-    return render(request, 'web/../templates/register.html')
+    return render(request,'register.html')
