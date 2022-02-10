@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'kim25.wsgi.application'
 DATABASES = {
     'default' : {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'kim25',
+        'NAME': 'kim26',
         'USER': 'root',
         'PASSWORD':'Root123+',
         'HOST': '42.193.150.217',
