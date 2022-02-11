@@ -5,6 +5,13 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/account.css' %}">
+    <style>
+        .error-msg {
+            color: red;
+            position: absolute;
+            font-size: 13px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -45,4 +52,39 @@
 {% endblock %}
 
 {% block js %}
+    <script>
+        //页面框架加载完成之后自动执行函数
+        $(function () {
+           bindClickBtnSms();
+        });
+        /*
+        点击获取验证码的按键绑定事件
+        * */
+        function bindClickBtnSms() {
+            $('#btnSms').click(function () {
+                //获取用户输入的手机号
+                //根据ID获取手机号
+                var mobilePhone = $('#id_mobile_phone').val()
+                //发送Ajax请求
+                $.ajax({
+                    {#url: "/send/sms/",#}
+                    url: "{% url 'send_sms' %}",
+                    dataType:'JSON',
+                    type: "GET",
+                    data:{mobilePhone:mobilePhone,tpl:'register'},
+                    success:function (res) {
+                        //
+                        if (res.status){
+                            console.log(res);
+                        }else {
+                            console.log(res);
+                            $.each(res.error,function (key,value) {
+                                $("#id_"+key).next().text(value[0]);
+                            })
+                        }
+                    }
+                })
+            })
+        }
+    </script>
 {% endblock %}

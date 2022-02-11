@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'kim25.wsgi.application'
 DATABASES = {
     'default' : {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'kim26',
+        'NAME': 'kim25',
         'USER': 'root',
         'PASSWORD':'Root123+',
         'HOST': '42.193.150.217',
@@ -120,7 +120,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
 TIME_ZONE = 'UTC'
 
