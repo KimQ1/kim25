@@ -71,7 +71,8 @@
                     url: "{% url 'send_sms' %}",
                     dataType:'JSON',
                     type: "GET",
-                    data:{mobilePhone:mobilePhone,tpl:'register'},
+                    {#data:{mobilePhone:mobilePhone,tpl:'register'},#}
+                    data:{mobile_phone:mobilePhone,tpl:'register'},
                     success:function (res) {
                         //
                         if (res.status){

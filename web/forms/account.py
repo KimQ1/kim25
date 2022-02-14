@@ -65,19 +65,19 @@ class SendSmsForm(forms.Form):
 
     def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # print(request)
         self.request = request
+        print(self.request)
 
     def clean_mobile_phone(self):
         """ 手机号校验的钩子 """
         mobile_phone = self.cleaned_data['mobile_phone']
-
         # 判断短信模板是否有问题
         tpl = self.request.GET.get('tpl')
         template_id = settings.TENCENT_SMS_TEMPLATE.get(tpl)
         if not template_id:
             # self.add_error('mobile_phone','短信模板错误')
             raise ValidationError('短信模板错误')
-
         exists = models.UserInfo.objects.filter(mobile_phone=mobile_phone).exists()
         if tpl == 'login':
             if not exists:
@@ -87,14 +87,11 @@ class SendSmsForm(forms.Form):
             if exists:
                 raise ValidationError('手机号已存在')
         code = random.randrange(1000, 9999)
-
         # 发送短信
         sms = send_sms_single(mobile_phone, template_id, [code, ])
         if sms['result'] != 0:
             raise ValidationError("短信发送失败，{}".format(sms['errmsg']))
-
         # 验证码 写入redis（django-redis）
         conn = get_redis_connection()
         conn.set(mobile_phone, code, ex=60)
-
         return mobile_phone
