@@ -59,7 +59,7 @@ class RegisterModelForm(forms.ModelForm):
         pwd = self.cleaned_data['password']
         return encrypt.md5(pwd)
     def clean_confirm_password(self):
-        pwd = self.cleaned_data['password']
+        pwd = self.cleaned_data.get('password')
         confirm_pwd = encrypt.md5(self.cleaned_data['confirm_password'])
         if pwd != confirm_pwd:
             raise ValidationError('两次密码不一致')
@@ -72,10 +72,12 @@ class RegisterModelForm(forms.ModelForm):
         return mobile_phone
     def clean_code(self):
         code = self.cleaned_data['code']
-        moblie = self.cleaned_data['mobile_phone']
-
+        # moblie_phone = self.cleaned_data['mobile_phone']//因为self.cleaned_data没有值，报错
+        moblie_phone = self.cleaned_data.get('mobile_phone')
+        if not moblie_phone:
+            return code
         conn = get_redis_connection()
-        redis_code = conn.get(moblie)
+        redis_code = conn.get(moblie_phone)
         if not redis_code:
             raise ValidationError('验证码失效或未发送，请重新发送')
         redis_str_code = redis_code.decode('utf-8')
