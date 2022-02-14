@@ -56,6 +56,7 @@
         //页面框架加载完成之后自动执行函数
         $(function () {
            bindClickBtnSms();
+           bindClickSubmit();
         });
         /*
         点击获取验证码的按键绑定事件
@@ -76,15 +77,56 @@
                     success:function (res) {
                         //
                         if (res.status){
-                            console.log(res);
+                            //console.log(res);
+                            sendSmsRemind();
                         }else {
-                            console.log(res);
+                            //console.log(res);
                             $.each(res.error,function (key,value) {
                                 $("#id_"+key).next().text(value[0]);
                             })
                         }
                     }
                 })
+            })
+        }
+        /*倒计时功能 */
+        function sendSmsRemind() {
+            var $smsBtn = $("#btnSms")
+            var time = 60;
+            var remind = setInterval(function () {
+                $smsBtn.val(time+'秒重新发送');
+                time= time-1;
+                if (time < 1){
+                    clearInterval(remind);
+                    $smsBtn.val('点击获取验证码').prop('disable',false)
+                }
+            },1000)
+
+        }
+        /*点击提交注册事件*/
+        function bindClickSubmit() {
+            $('#btnSubmit').click(function (){
+                $('.error-msg').empty();
+                //收集数据
+                //Ajax发送数据
+                $.ajax({
+                    url:"{% url 'register' %}",
+                    type:"POST",
+                    data:$('#regForm').serialize(), //所有字段 +crsftoken 字段
+                    dataType: "JSON",
+                    success:function (res) {
+                        //console.log(res)
+                        if(res.status){
+                            location.href = res.data;
+                        }else {
+                            //console.log(res);
+                            $.each(res.error,function (key,value) {
+                                $("#id_"+key).next().text(value[0]);
+                            })
+                        }
+                    }
+                })
+
             })
         }
     </script>
