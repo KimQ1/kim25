@@ -4,6 +4,7 @@
 
 from django.shortcuts import render,HttpResponse,redirect
 from django.http import JsonResponse
+from django.db.models import Q
 
 from web import models
 from web.forms.account import RegisterModelForm,SendSmsForm,LoginSMSForm,LoginForm
@@ -47,6 +48,7 @@ def login_sms(request):
         user_object = models.UserInfo.objects.filter(mobile_phone=moblie_phone).first()
         request.session['user_id'] = user_object.id
         request.session['use_name'] = user_object.username
+        request.session.set_expiry(60*60*24)
         return JsonResponse({'status': True,'data':'/index/'})
     return JsonResponse({'status': False, 'error': form.errors})
 
@@ -54,11 +56,20 @@ def login_sms(request):
 def login(request):
     '''用户名和密码登录'''
     if request.method == "GET":
-        form = LoginForm()
+        form = LoginForm(request)
         return render(request,'login.html',{'form':form})
-    form =  LoginForm(data = request.POST)
+    form = LoginForm(request,data=request.POST)
     if form.is_valid():
-        return redirect('index')
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        # user_object = models.UserInfo.objects.filter(username=username,password=password).first()
+        user_object = models.UserInfo.objects.filter(Q(email=username)|Q(mobile_phone=username)).filter(
+            password=password).first()
+        if user_object:
+            request.session['user_id'] = user_object.id
+            request.session.set_expiry(60*60*24)
+            return redirect('index')
+        form.add_error('username','用户名或密码错误')
     return render(request,'login.html',{'form':form})
 
 
@@ -73,4 +84,9 @@ def image_code(request):
     image_object.save(stream,'png')
 
     return HttpResponse(stream.getvalue())
+
+
+def logout(request):
+    request.session.flush()
+    return redirect('index')
 

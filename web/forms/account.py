@@ -85,9 +85,7 @@ class SendSmsForm(forms.Form):
 
     def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # print(request)
         self.request = request
-        print(self.request)
 
     def clean_mobile_phone(self):
         """ 手机号校验的钩子 """
@@ -152,7 +150,7 @@ class LoginSMSForm(BootStrapForm,forms.Form):
 
 
 class LoginForm(BootStrapForm,forms.Form):
-    username = forms.CharField(label='用户名')
+    username = forms.CharField(label='邮箱或手机号')
     password = forms.CharField(label='密码',
                                min_length=8,
                                max_length=64,
@@ -160,7 +158,26 @@ class LoginForm(BootStrapForm,forms.Form):
                                    'min_length': '密码长度不能小于8位',
                                    'max_length': '密码长度不能大于64位'
                                },
-                               widget=forms.PasswordInput(attrs={'placeholder':'请输入密码'}))
+                               widget=forms.PasswordInput(attrs={'placeholder':'请输入密码'},render_value=True))
     code = forms.CharField(label='图片验证码')
+    
+    def __init__(self, request, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.request = request
+    def clean_password(self):
+        pwd = self.cleaned_data['password']
+        return encrypt.md5(pwd)
+    def clean_code(self):
+        '''钩子 图片验证码是否正确'''
+        code = self.cleaned_data['code']
+        session_code = self.request.session.get('image_code')
+        if not session_code:
+            raise ValidationError('验证码已过期，请重新获取')
+        if code.upper() != session_code.upper():
+            raise ValidationError('验证码输入错误')
+        return code
+
+
+        
 
 
