@@ -52,7 +52,6 @@ def login_sms(request):
         return JsonResponse({'status': True,'data':'/index/'})
     return JsonResponse({'status': False, 'error': form.errors})
 
-
 def login(request):
     '''用户名和密码登录'''
     if request.method == "GET":
@@ -72,7 +71,6 @@ def login(request):
         form.add_error('username','用户名或密码错误')
     return render(request,'login.html',{'form':form})
 
-
 def image_code(request):
     '''生成图片验证码'''
 
@@ -84,7 +82,6 @@ def image_code(request):
     image_object.save(stream,'png')
 
     return HttpResponse(stream.getvalue())
-
 
 def logout(request):
     request.session.flush()
