@@ -23,6 +23,6 @@ urlpatterns = [
     # path('app01/register/', views.register),
     # path('web/register/',account.register),
     # path('app01/',include('app01.urls',"app01"),namespace='app01'),错误写法
-    path('app01/',include(('app01.urls',"app01"), namespace='app01')),
+    # path('app01/',include(('app01.urls',"app01"), namespace='app01')),
     path('',include('web.urls'))
 ]
