@@ -16,6 +16,4 @@ urlpatterns = [
 
     #项目管理
     path('project/list/', project.project_list,name='project_list'),
-
-
 ]
